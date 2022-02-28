@@ -136,9 +136,16 @@
 
     /*newly added types*/
 
+    /*related to features*/
     %type <features> feature_list		
     %type <features> features           
     %type <feature> feature
+
+    /*related to formals*/
+    %type <formals> formal_list
+    %type <formal> formal
+
+    /*related to expressions*/
     
     
     %%
@@ -306,6 +313,54 @@
 	    	attr constructor to create an attribute*/
 	    	$$ = attr($1, $3 , $5);
 	    };
+
+	formal_list : 
+
+		/*
+			Definition of the list of formals
+
+		*/
+		formal { /* formal_list can be made up of only one formal. 
+	    		Here formal needs to be defined below.
+	    		*/
+
+	    	/* make a single formal instance using the constructor */
+	      	$$ = single_Formals($1);
+
+	    } | 
+
+	    formal_list , formal { 	/* formal_list can be multilple formals */
+
+	    	/* create a new formal using constructor and append that to the formal list */
+	      	$$ = append_Formals($1,single_Formals($3));
+
+	    } |
+
+	    {
+	    	/* Formal also can be made up of empty formal*/
+	    	$$ = nil_Formals();
+
+	    };
+
+	formal : 
+
+		/*
+			Definition of a single formal
+		*/
+
+		OBJECTID ':' TYPEID {
+
+			/*
+				formal is made up of identifier and the colon, followed 
+				by its' type. We need to create a formal object using 
+				the constructor.
+			*/
+			$$ = formal($1,$3);
+
+		};
+
+	
+
 
     
     
