@@ -1,0 +1,16 @@
+*
+!.gitignore
+!*.cl
+
+!/PA2
+!/PA3
+!/PA4
+!/PA5
+
+!/PA2/README
+!/PA3/README
+!/PA4/README
+!/PA5/README
+!/PA2/cool.flex
+!/PA3/cool.y
+
