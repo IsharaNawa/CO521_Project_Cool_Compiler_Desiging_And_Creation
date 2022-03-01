@@ -147,6 +147,8 @@
 
     /*related to expressions*/
     %type <expression> expression
+    %type <expressions> expr_parameters
+
     
     
     %%
@@ -377,7 +379,7 @@
 
     } |
 
-    expression '.' OBJECTID '(' expression_list ')'{
+    expression '.' OBJECTID '(' expr_parameters ')'{
 
       /*
         this can be considered as a dispatch operation.
@@ -390,7 +392,7 @@
 
     } |
 
-    expression '@' TYPEID '.' OBJECTID '(' expression_list ')'{
+    expression '@' TYPEID '.' OBJECTID '(' expr_parameters ')'{
 
       /*
         this can be considered as a dispatch operation.
@@ -404,7 +406,7 @@
 
     } |
 
-    OBJECTID '(' expression_list ')' {
+    OBJECTID '(' expr_parameters ')' {
 
       /*
         another type of dispatch operation.
@@ -414,7 +416,7 @@
         operation from the constructor.
       */
 
-      $$ = dispatch(object(idtable.add_string("self")),$3,$5);
+      $$ = dispatch(object(idtable.add_string("self")),$1,$3);
 
     } |
 
@@ -436,7 +438,7 @@
       */
       $$ = loop($2,$4);
 
-    }
+    };
 
 
 
