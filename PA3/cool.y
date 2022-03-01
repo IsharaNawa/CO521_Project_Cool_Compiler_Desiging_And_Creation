@@ -359,7 +359,37 @@
 
 		};
 
-	
+	expression :
+
+		/*
+			There are many number of definitions for expressions are
+			those are defined here.(all definitions are at 17th page 
+			in cool-manual.pdf)
+		*/ 
+
+    OBJECTID ASSIGN expression {
+
+      /*
+        expression can be an assignment
+      */
+      $$ = assign($1,$3);
+
+    } |
+
+    expression '.' OBJECTID '(' expression_list ')'{
+
+      /*
+        another type of fuction call.
+        this can be considered as a dispatch operation.
+        We need to use the dispatch constructor to create
+        a new dispatch instance as stated in the line 325 in 
+        cool-tree.h
+      */
+
+      $$ = dispatch($1,$3,$5);
+
+    }
+
 
 
     
