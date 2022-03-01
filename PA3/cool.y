@@ -438,7 +438,66 @@
       */
       $$ = loop($2,$4);
 
-    };
+    } |
+
+    '{' expr_statements '}' {
+
+      /*
+        these are the block of statements which are inside 
+        curly braces.
+      */
+      $$ = block($2);
+
+    } |
+
+    LET expr_let{
+      /*
+        there are few types of token arrangements for the let
+        keywords. But it is specified in the pdf, that let keyword
+        contains the ambiguity issue. Therefore, cases for let keyword
+        will be handled below in another section.
+      */
+
+      $$ = $2;
+
+    } |
+
+    CASE expression OF expr_case ESAC{
+
+      /*
+        since it helps with readability, all of the expressions 
+        related to cases will be defined below.
+      */
+
+      $$ = typcase($2,$4);
+
+    } |
+
+    NEW TYPEID {
+
+      /*
+        Creating an instance using an object.
+        We need to create an object for the given class.
+        For this , we need to use the constructor for the 
+        new class.
+      */
+
+      $$ = new_($2);
+
+    } |
+
+    ISVOID expression {
+
+      /*
+        We need to create a new isvoid instace using 
+        the constructor for this.
+      */
+
+      $$ = isvoid($2);
+
+    } |
+
+
 
 
 
