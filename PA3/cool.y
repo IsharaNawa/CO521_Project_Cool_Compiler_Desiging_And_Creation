@@ -146,6 +146,7 @@
     %type <formal> formal
 
     /*related to expressions*/
+    %type <expression> expression
     
     
     %%
@@ -307,7 +308,7 @@
         	$$ = attr($1, $3 , no_expr());
       	} | 
 
-	    OBJECTID : TYPEID ASSIGN expression {
+	    OBJECTID ':' TYPEID ASSIGN expression {
 
 	    	/*feature also can be a assigning expression, here also use the
 	    	attr constructor to create an attribute*/
@@ -329,7 +330,7 @@
 
 	    } | 
 
-	    formal_list , formal { 	/* formal_list can be multilple formals */
+	    formal_list ',' formal { 	/* formal_list can be multilple formals */
 
 	    	/* create a new formal using constructor and append that to the formal list */
 	      	$$ = append_Formals($1,single_Formals($3));
@@ -379,7 +380,6 @@
     expression '.' OBJECTID '(' expression_list ')'{
 
       /*
-        another type of fuction call.
         this can be considered as a dispatch operation.
         We need to use the dispatch constructor to create
         a new dispatch instance as stated in the line 325 in 
@@ -388,7 +388,41 @@
 
       $$ = dispatch($1,$3,$5);
 
-    }
+    } |
+
+    expression '@' TYPEID '.' OBJECTID '(' expression_list ')'{
+
+      /*
+        this can be considered as a dispatch operation.
+        Since we specially specfy the type here, 
+        it works as a static dispatch operation.
+        We need to create a static dispacth operation using
+        the constructor as given in the line 300 in cool-tree.h.
+      */
+
+      $$ = static dispatch($1,$3,$5,$7);
+
+    } |
+
+    OBJECTID '(' expression_list ')' {
+
+      /*
+        another type of dispatch operation.
+        These type of dispatch operations comes
+        from dropping the self keyword. Therefore
+        we need to add that when we create a dispatch
+        operation from the constructor.
+      */
+
+      $$ = dispatch(object(idtable.add_string("self")),$3,$5);
+
+    } |
+
+
+
+
+
+
 
 
 
