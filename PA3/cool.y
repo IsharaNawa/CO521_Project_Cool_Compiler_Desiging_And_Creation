@@ -646,6 +646,39 @@
 
     };
 
+  expr_parameters :
+
+    /*
+      Definition of the list of parameters of expressions
+
+    */
+
+    expression {
+
+        /* expr_parameters can be made up of only one expression. 
+          Here expression needs to be defined below.
+        */
+
+        /* make a single expression instance using the constructor */
+          $$ = single_Expressions($1);
+
+    } | 
+
+    expr_parameters ',' expression {  
+
+        /* expr_parameters can be multilple expressions of parameters */
+
+        /* create a new single expression using constructor and append that to the parameter list */
+          $$ = append_Expressions($1,single_Expressions($3));
+
+    } |
+
+    {
+        /* Parameters also can be empty*/
+        $$ = nil_Expressions();
+
+    };
+
 
 
 
