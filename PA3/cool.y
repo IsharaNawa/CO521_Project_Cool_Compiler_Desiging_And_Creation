@@ -418,6 +418,26 @@
 
     } |
 
+    IF expression THEN expression ELSE expression FI {
+
+      /*
+        this is a if then else condition, and we need to create
+        a new condition using the constructor.
+      */
+
+      $$ = cond($2,$4,$6);
+    } |
+
+    WHILE expression LOOP expression POOL {
+
+      /*
+        We need to create a new loop instance for this
+        using the constructor of the loop class.
+      */
+      $$ = loop($2,$4);
+
+    }
+
 
 
 
