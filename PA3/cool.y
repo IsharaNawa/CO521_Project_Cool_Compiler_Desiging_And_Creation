@@ -148,6 +148,9 @@
     /*related to expressions*/
     %type <expression> expression
     %type <expressions> expr_parameters
+    %type <expressions> expr_statements
+    %type <expressions> expr_let
+    %type <expressions> expr_case
 
     
     
@@ -496,6 +499,156 @@
       $$ = isvoid($2);
 
     } |
+
+    expression '+' expression {
+
+      /*
+        this is adding two expressions
+      */
+
+      $$ = plus($1,$3);
+
+    } |
+
+    expression '-' expression {
+
+      /*
+        this is substracting two expressions
+      */
+
+      $$ = sub($1,$3);
+
+    } |
+
+    expression '*' expression {
+
+      /*
+        this is multiplying two expressions
+      */
+
+      $$ = mul($1,$3);
+
+    } |
+
+    expression '/' expression {
+
+      /*
+        this is dividing two expressions
+      */
+
+      $$ = divide($1,$3);
+
+    } |
+
+    '~' expression {
+
+      /*
+        this is negating the expression
+      */
+
+      $$ = neg($2);
+
+    } |
+
+    expression '<' expression {
+
+      /*
+        this is the comparison operation to see
+        if first expression is less than to the
+        second one 
+      */
+
+      $$ = lt($1,$3);
+
+    } |
+
+    expression LE expression {
+
+      /*
+        this is the comparison operation to see
+        if first expression is less or equal to the
+        second one 
+      */
+
+      $$ = leq($1,$3);
+
+    } |
+
+    expression '=' expression {
+
+      /*
+        this is the comparison operation to see
+        if first expression is equal to the
+        second one 
+      */
+
+      $$ = eq($1,$3);
+
+    } |
+
+    NOT expression {
+
+      /*
+        This is to get the complement of an expression.
+      */
+
+      $$ = comp($2);
+
+    } |
+
+    '(' expression ')' {
+
+      /*
+        This is for expressions within brackets.
+      */
+
+      $$ = $2;
+
+    } |
+
+    OBJECTID {
+
+      /*
+        One object id is considered as a expression itself.
+      */
+
+      $$ = object($1);
+
+    } |
+
+    INT_CONST {
+
+      /*
+        integer value itself, can be considered as a expression.
+      */
+
+      $$ = int_const($1);
+
+    } |
+
+    STR_CONST {
+
+      /*
+        string value itself, can be considered as a expression.
+      */
+
+      $$ = string_const($1);
+
+    } |
+
+    BOOL_CONST {
+
+      /*
+        boolean value itself, can be considered as a expression.
+      */
+
+      $$ = bool_const($1);
+
+    };
+
+
+
+
 
 
 
