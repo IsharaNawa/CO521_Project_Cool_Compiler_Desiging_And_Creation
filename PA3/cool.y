@@ -150,7 +150,9 @@
     %type <expressions> expr_parameters
     %type <expressions> expr_statements
     %type <expressions> expr_let
-    %type <expressions> expr_case
+    %type <cases> expr_case
+    %type <case_> single_case
+    
 
     
     
@@ -405,7 +407,7 @@
         the constructor as given in the line 300 in cool-tree.h.
       */
 
-      $$ = static dispatch($1,$3,$5,$7);
+      $$ = static_dispatch($1,$3,$5,$7);
 
     } |
 
@@ -746,6 +748,56 @@
       $$ = branch($1,$3,$5);
 
     };
+
+  expr_let : 
+
+    /*
+      definitions for expressions in let
+    */
+
+    OBJECTID ':' TYPEID IN expression {
+
+      /*
+        without both the first and second optional parts
+      */
+
+      $$ = let($1,$3,no_expr(),$5);
+
+    } |
+
+    OBJECTID ':' TYPEID ASSIGN expression IN expression {
+
+      /*
+        without the second optional part
+      */
+
+
+      $$ = let($1,$3,$5,$7);
+      
+    } |
+
+    OBJECTID ':' TYPEID ',' expr_let{
+
+      /*
+        without the first optional part
+      */
+
+      $$ = let($1,$3,no_expr(),$5);
+      
+    } |
+
+    OBJECTID ':' TYPEID ASSIGN expression ',' expr_let {
+
+      /*
+        with all optional parts
+      */
+
+      $$ = let($1,$3,$5,$7);
+      
+    };
+
+
+
 
 
 
