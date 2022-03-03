@@ -679,6 +679,81 @@
 
     };
 
+  expr_statements :
+
+  /*
+    This is the expressions in a block
+  */
+
+    expression ';' {
+
+        /* expr_parameters can be made up of only one expression. 
+          Here expression needs to be defined below.
+        */
+
+        /* make a single expression instance using the constructor */
+          $$ = single_Expressions($1);
+
+    } | 
+
+    expr_statements expression ';' {  
+
+        /* expr_parameters can be multilple expressions of parameters */
+
+        /* create a new single expression using constructor and append that to the parameter list */
+          $$ = append_Expressions($1,single_Expressions($2));
+
+    };
+
+  expr_case :
+
+    /*
+      this is the expressions for the switch case statements
+    */
+
+    single_case {
+
+      /*
+        one case related to the switch case structure
+      */
+
+      $$ = single_Cases($1);
+
+    } |
+
+    expr_case single_case{
+
+      /*
+        append the new case to the list
+      */
+
+      $$ = append_Cases($1,single_Cases($2));
+
+    };
+
+  single_case :
+
+    /*
+      Here we define single case for the expr_case
+    */ 
+
+    OBJECTID ':' TYPEID DARROW expression ';' {
+
+      /*
+        this is the structure for a single case
+      */
+
+      $$ = branch($1,$3,$5);
+
+    };
+
+
+
+
+
+
+
+
 
 
 
