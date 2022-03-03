@@ -149,7 +149,7 @@
     %type <expression> expression
     %type <expressions> expr_parameters
     %type <expressions> expr_statements
-    %type <expressions> expr_let
+    %type <expression> expr_let
     %type <cases> expr_case
     %type <case_> single_case
     
