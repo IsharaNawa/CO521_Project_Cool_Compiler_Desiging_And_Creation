@@ -192,9 +192,13 @@
 	    	root node of the AST is defined as the program it self.
 	    */
 
-	    class_list{		/*program is a list of classes*/ 
+	    class_list {
+
+        /*program is a list of classes*/
+
 	    	@$ = @1; 
-	    	ast_root = program($1); 
+	    	ast_root = program($1);
+
 	    };
     
     class_list :
@@ -203,78 +207,137 @@
     		definition of the class_list is defined here
     	*/
 
-	    class { /* class_list can be made up of only one calss(main class). 
+	    class {
+
+        /* 
+          class_list can be made up of only one calss(main class). 
 	    		here class needs to be defined below.
-	    		*/
+	    	*/
 
 	    	/* make a single class instance using the constructor */
-	      	$$ = single_Classes($1);
+	        $$ = single_Classes($1);
 
-	      	/* add the class to the parser */
-	      	parse_results = $$;	 
+	      /* add the class to the parser */
+	      	parse_results = $$;
+
 	    } | 
 
-	    class_list class { 	/* class_list can be multilple classes */
+	    class_list class {
 
-	    	/* create a new class using constructor and append that to the class list */
+	    	/* create a new class using constructor and append that to the 
+        class list */
 	      	$$ = append_Classes($1,single_Classes($2));
 
-	      	/* add the class_list to the parser */ 
-	      	parse_results = $$; 
+	      /* add the class_list to the parser */ 
+	      	parse_results = $$;
+
 	    };
     
-    /* If no parent is specified, the class inherits from the Object class. */
-
-
     class	:
+
     	/* 
     		definititon of the single class
-    	 */
+    	*/
 
-    	/*class is defined giving only the name of the class as the type id.
+    	/*
+        class is defined giving only the name of the class as the type id.
     	  Here, the class inherits from the Object class. 	
-    	*/ 
+    	*/
+
 	    CLASS TYPEID '{' feature_list '}' ';'{ 
 
 	    	/* create a class using the constructor.
 	    	   here name of the parent class is set as the Object.
 	    	   What is inside each class, there is a list of 
 	    	   features.
-	    	 */
+	    	*/
+
 	        $$ = class_($2,idtable.add_string("Object"),$4,
-	        stringtable.add_string(curr_filename)); 
+	        stringtable.add_string(curr_filename));
+
 	    } |
 
-	    /* class can also be inherited from its parent class,
+	    /* 
+        class can also be inherited from its parent class,
 	      in this approach we neeed to defined the name of the 
 	      parent class
 	    */
-	     CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'{
 
-	     	/* create a class using the constructor.
-	    	   here name of the parent class is set as the 4th token($4).
-	    	   What is inside each class, there is a list of 
-	    	   features.
-	    	 */
-	        $$ = class_($2,$4,$6,stringtable.add_string(curr_filename));
+	    CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'{
 
-	    };
+	     	/* 
+          create a class using the constructor.
+	    	  here name of the parent class is set as the 4th token($4).
+	    	  What is inside each class, there is a list of 
+	    	  features.
+	    	*/
+
+	      $$ = class_($2,$4,$6,stringtable.add_string(curr_filename));
+
+	    } |
+
+      /*
+        error case 1 : when there is an error in the feature list
+        it is identified.
+      */
+
+      CLASS TYPEID '{' error '}' ';' {
+
+        /*
+          Discard the current lookahead token. This is useful primarily in 
+          error rules and apply a null node to the parse tree
+        */ 
+          yyclearin; 
+          $$ = NULL; 
+      } |
+
+      /*
+        error case 2 : when there is an error in the function signature,
+        it is identified.
+      */
+
+      CLASS error '{' feature_list '}' ';' {
+        /*
+          Discard the current lookahead token. This is useful primarily in
+          error rules and apply a null node to the parse tree
+        */
+
+          yyclearin;
+          $$ = NULL; 
+      } |
+
+      /*
+        error case 3 : when there is an error in the feature list or
+        function definition,it is identified.
+      */
+
+      CLASS error '{' error '}' ';' {
+        /*
+          Discard the current lookahead token. This is useful primarily in error rules and apply a null node to the parse tree
+        */  
+          yyclearin;
+          $$ = NULL; 
+      };
     
-    /* Feature list may be empty, but no empty features in list. */
 
     feature_list :
+
     	/* 
     		Definition of each feature_list.
-    	   	Feature list is the set of statements in each class
-    	 */
+    	  Feature list is the set of statements in each class
+    	*/
 
 	    { 
-	    	/* inside the class can be empty.
-	    	   Hence, feature list can be empty.
+	    	/*
+          inside the class can be empty.
+	    	  Hence, feature list can be empty.
 	     	*/ 
 	      	$$ = nil_Features(); 
-	    }|  
-	    features { /*feature list can consists with features*/
+	    }|
+
+	    features {
+
+        /*feature list can consists with features*/
 
 	    	/*
 	    		Here we need to defined what does feature mean, below.
@@ -285,26 +348,52 @@
 	    };
 
     features :
+
     	/*
     		Definition of each features
     	*/
 
-	    feature ';' { 	
-	    	/* Features can be consists of only one feature.
+	    feature ';' { 
+
+	    	/* 
+          Features can be consists of only one feature.
 	    		Here we need to create a new feature using the 
 	    		constructor and get that as features. We need to
 	    		define the feature below.
 	    	*/
-	      	$$ = single_Features($1); 
-	    }| 
+
+	      	$$ = single_Features($1);
+
+	    }|
+
 	    features feature ';' {
-	    	/* features can be considered as features and one other 
-	    	   single feature. Here , we need to create a new feature
-	    	   for the single feature using the constructor and append
-	    	   that to the features list.
-	    	*/ 
-	      	$$ = append_Features($1, single_Features($2)); 
-	    };
+
+	    	/* 
+          features can be considered as features and one other 
+	    	  single feature. Here , we need to create a new feature
+	    	  for the single feature using the constructor and append
+	    	  that to the features list.
+	    	*/
+
+	      	$$ = append_Features($1, single_Features($2));
+
+	    } |
+
+      error ';' {
+
+        /* 
+          when there is an error in the features, 
+          it is identified
+        */ 
+
+        /*
+          Discard the current lookahead token. This is useful primarily in error rules and apply a null node to the parse tree
+        */
+
+          yyclearin; 
+          $$ = NULL;
+
+      };
 
     feature :
 
@@ -312,61 +401,85 @@
     		Definition of each feature
     	*/
 
-    	/* as per the cool manual , feature can be considered as a 
+    	/*
+        as per the cool manual , feature can be considered as a 
     		method or the function call. Here name of the function is
     		followed by the formal_list inside brackets then the 
     		return type of the method should be specified. In the
     		function definition, there is a set of experssions.
-    	 */
-      	OBJECTID '(' formal_list ')' ':' TYPEID '{' expression '}' {
+    	*/
 
-      		/*create a method instance using the constructor and pass the
+      OBJECTID '(' formal_list ')' ':' TYPEID '{' expression '}' {
+
+      	/*
+          create a method instance using the constructor and pass the
       		arguments as specified in the line 182 of cool-tree.h file.
       		Also we need to define the formal_list below.
-      		*/
+      	*/
+
         	$$ = method($1,$3,$6, $8);
-      	} |
 
-      	OBJECTID ':' TYPEID {
+      } |
 
-      		/*feature can also be a variable with its' type.
+      OBJECTID ':' TYPEID {
+
+      	/*
+          feature can also be a variable with its' type.
       		This is an attirbute. Here use the constructor of attribute and
       		pass arguments as specified in the line 207 in cool-tree.h
-      		*/
+      	*/
+
         	$$ = attr($1, $3 , no_expr());
-      	} | 
+
+      } | 
 
 	    OBJECTID ':' TYPEID ASSIGN expression {
 
-	    	/*feature also can be a assigning expression, here also use the
-	    	attr constructor to create an attribute*/
+	    	/*
+          feature also can be a assigning expression, here also use the
+	    	  attr constructor to create an attribute
+        */
+
 	    	$$ = attr($1, $3 , $5);
+
 	    };
 
 	formal_list : 
 
 		/*
 			Definition of the list of formals
-
 		*/
-		formal { /* formal_list can be made up of only one formal. 
-	    		Here formal needs to be defined below.
-	    		*/
 
-	    	/* make a single formal instance using the constructor */
-	      	$$ = single_Formals($1);
+		formal {
+
+      /* 
+        formal_list can be made up of only one formal. 
+	    	Here formal needs to be defined below.
+	    */
+
+	    /* make a single formal instance using the constructor */
+	      $$ = single_Formals($1);
 
 	    } | 
 
-	    formal_list ',' formal { 	/* formal_list can be multilple formals */
+	    formal_list ',' formal {
 
-	    	/* create a new formal using constructor and append that to the formal list */
+        /* 
+          formal_list can be multilple formals
+        */
+
+	    	/* 
+          create a new formal using constructor and append that to the 
+          formal list 
+        */
 	      	$$ = append_Formals($1,single_Formals($3));
 
 	    } |
 
 	    {
-	    	/* Formal also can be made up of empty formal*/
+	    	/*
+          Formal also can be made up of empty formal
+        */
 	    	$$ = nil_Formals();
 
 	    };
@@ -384,7 +497,8 @@
 				by its' type. We need to create a formal object using 
 				the constructor.
 			*/
-			$$ = formal($1,$3);
+
+			  $$ = formal($1,$3);
 
 		};
 
@@ -401,7 +515,8 @@
       /*
         expression can be an assignment
       */
-      $$ = assign($1,$3);
+
+        $$ = assign($1,$3);
 
     } |
 
@@ -414,7 +529,7 @@
         cool-tree.h
       */
 
-      $$ = dispatch($1,$3,$5);
+        $$ = dispatch($1,$3,$5);
 
     } |
 
@@ -428,7 +543,7 @@
         the constructor as given in the line 300 in cool-tree.h.
       */
 
-      $$ = static_dispatch($1,$3,$5,$7);
+        $$ = static_dispatch($1,$3,$5,$7);
 
     } |
 
@@ -442,7 +557,7 @@
         operation from the constructor.
       */
 
-      $$ = dispatch(object(idtable.add_string("self")),$1,$3);
+        $$ = dispatch(object(idtable.add_string("self")),$1,$3);
 
     } |
 
@@ -453,7 +568,8 @@
         a new condition using the constructor.
       */
 
-      $$ = cond($2,$4,$6);
+        $$ = cond($2,$4,$6);
+
     } |
 
     WHILE expression LOOP expression POOL {
@@ -462,7 +578,8 @@
         We need to create a new loop instance for this
         using the constructor of the loop class.
       */
-      $$ = loop($2,$4);
+
+        $$ = loop($2,$4);
 
     } |
 
@@ -472,11 +589,13 @@
         these are the block of statements which are inside 
         curly braces.
       */
-      $$ = block($2);
+
+        $$ = block($2);
 
     } |
 
     LET expr_let{
+
       /*
         there are few types of token arrangements for the let
         keywords. But it is specified in the pdf, that let keyword
@@ -495,7 +614,7 @@
         related to cases will be defined below.
       */
 
-      $$ = typcase($2,$4);
+        $$ = typcase($2,$4);
 
     } |
 
@@ -508,7 +627,7 @@
         new class.
       */
 
-      $$ = new_($2);
+        $$ = new_($2);
 
     } |
 
@@ -519,7 +638,7 @@
         the constructor for this.
       */
 
-      $$ = isvoid($2);
+        $$ = isvoid($2);
 
     } |
 
@@ -529,7 +648,7 @@
         this is adding two expressions
       */
 
-      $$ = plus($1,$3);
+        $$ = plus($1,$3);
 
     } |
 
@@ -539,7 +658,7 @@
         this is substracting two expressions
       */
 
-      $$ = sub($1,$3);
+        $$ = sub($1,$3);
 
     } |
 
@@ -549,7 +668,7 @@
         this is multiplying two expressions
       */
 
-      $$ = mul($1,$3);
+        $$ = mul($1,$3);
 
     } |
 
@@ -559,7 +678,7 @@
         this is dividing two expressions
       */
 
-      $$ = divide($1,$3);
+        $$ = divide($1,$3);
 
     } |
 
@@ -569,7 +688,7 @@
         this is negating the expression
       */
 
-      $$ = neg($2);
+        $$ = neg($2);
 
     } |
 
@@ -581,7 +700,7 @@
         second one 
       */
 
-      $$ = lt($1,$3);
+        $$ = lt($1,$3);
 
     } |
 
@@ -593,7 +712,7 @@
         second one 
       */
 
-      $$ = leq($1,$3);
+        $$ = leq($1,$3);
 
     } |
 
@@ -605,7 +724,7 @@
         second one 
       */
 
-      $$ = eq($1,$3);
+        $$ = eq($1,$3);
 
     } |
 
@@ -615,7 +734,7 @@
         This is to get the complement of an expression.
       */
 
-      $$ = comp($2);
+        $$ = comp($2);
 
     } |
 
@@ -625,7 +744,7 @@
         This is for expressions within brackets.
       */
 
-      $$ = $2;
+        $$ = $2;
 
     } |
 
@@ -635,7 +754,7 @@
         One object id is considered as a expression itself.
       */
 
-      $$ = object($1);
+        $$ = object($1);
 
     } |
 
@@ -645,7 +764,7 @@
         integer value itself, can be considered as a expression.
       */
 
-      $$ = int_const($1);
+        $$ = int_const($1);
 
     } |
 
@@ -655,7 +774,7 @@
         string value itself, can be considered as a expression.
       */
 
-      $$ = string_const($1);
+        $$ = string_const($1);
 
     } |
 
@@ -665,7 +784,7 @@
         boolean value itself, can be considered as a expression.
       */
 
-      $$ = bool_const($1);
+        $$ = bool_const($1);
 
     };
 
@@ -673,32 +792,42 @@
 
     /*
       Definition of the list of parameters of expressions
-
     */
 
     expression {
 
-        /* expr_parameters can be made up of only one expression. 
+        /* 
+          expr_parameters can be made up of only one expression. 
           Here expression needs to be defined below.
         */
 
-        /* make a single expression instance using the constructor */
+        /* 
+          make a single expression instance using the constructor
+        */
           $$ = single_Expressions($1);
 
     } | 
 
     expr_parameters ',' expression {  
 
-        /* expr_parameters can be multilple expressions of parameters */
+        /*
+          expr_parameters can be multilple expressions of parameters
+        */
 
-        /* create a new single expression using constructor and append that to the parameter list */
+        /* 
+          create a new single expression using constructor and append that
+          to the parameter list
+        */
+
           $$ = append_Expressions($1,single_Expressions($3));
 
     } |
 
     {
-        /* Parameters also can be empty*/
-        $$ = nil_Expressions();
+        /*
+          Parameters also can be empty
+        */
+          $$ = nil_Expressions();
 
     };
 
@@ -710,21 +839,42 @@
 
     expression ';' {
 
-        /* expr_parameters can be made up of only one expression. 
+        /*
+          expr_parameters can be made up of only one expression. 
           Here expression needs to be defined below.
         */
 
-        /* make a single expression instance using the constructor */
+        /*
+          make a single expression instance using the constructor 
+        */
           $$ = single_Expressions($1);
 
     } | 
 
     expr_statements expression ';' {  
 
-        /* expr_parameters can be multilple expressions of parameters */
+        /*
+          expr_parameters can be multilple expressions of parameters
+        */
 
-        /* create a new single expression using constructor and append that to the parameter list */
+        /*
+          create a new single expression using constructor and append that 
+          to the parameter list
+        */
           $$ = append_Expressions($1,single_Expressions($2));
+
+    } | 
+
+    error ';' { 
+
+      /*  
+        When there is an error in the statements, it is identified and
+        then , discard the current lookahead token. This is useful 
+        primarily in error rules and apply a null node to the parse tree.
+      */ 
+
+        yyclearin;
+        $$ = NULL;
 
     };
 
@@ -792,7 +942,6 @@
         without the second optional part
       */
 
-
       $$ = let($1,$3,$5,$7);
       
     } |
@@ -815,35 +964,35 @@
 
       $$ = let($1,$3,$5,$7);
       
+    } |
+
+    error IN expression {
+
+      /*
+        When there is an error in the object id definition, it is 
+        identified and then , discard the current lookahead token. This is
+        useful primarily in error rules and apply a null node to the parse 
+        tree.
+      */
+
+        yyclearin; 
+        $$ = NULL;
+
+    } |
+
+    error ',' expr_let {
+
+      /*
+        When there is an error in the object id definition with the
+        assign operation, it is identified and then , discard the current 
+        lookahead token. This is useful primarily in error rules and apply
+        a null node to the parse tree.
+      */
+
+        yyclearin;
+        $$ = NULL;
     };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
     /* end of grammar */
     %%
     
@@ -860,5 +1009,4 @@
       
       if(omerrs>50) {fprintf(stdout, "More than 50 errors\n"); exit(1);}
     }
-    
-    
+      

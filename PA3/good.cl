@@ -1,6 +1,6 @@
 -- example of static and dynamic type differing for a dispatch
 
-Class Book inherits IO {
+Class Book inherits IO{
     title : String;
     author : String;
 
