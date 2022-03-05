@@ -153,9 +153,30 @@
     %type <cases> expr_case
     %type <case_> single_case
     
+    /* writing the procedence rules*/
 
-    
-    
+    /*
+      Order of precedence is shown in the page 16 in 
+      cool-manual.pdf from highest priority to the lowest.
+      But in here, we declare the precedence from lowest to
+      the highest.
+
+      According to the section 2.2 in the Bison manual, the 
+      precedence can be declared as,
+      %[left/right/nonassoc] [token]
+
+    */
+
+    %right ASSIGN
+    %left NOT
+    %nonassoc LE '<' '='
+    %left '+' '-'
+    %left '*' '/'
+    %left ISVOID
+    %left '~'
+    %left '@'
+    %left '.'
+
     %%
     /* 
     Save the root of the abstract syntax tree in a global variable.
