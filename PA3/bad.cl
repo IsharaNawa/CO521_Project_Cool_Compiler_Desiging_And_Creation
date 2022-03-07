@@ -1,29 +1,55 @@
+-- 1. erroneous class definition ('inherits' is misspelled)
+Class Book inherit IO{
 
-(*
- *  execute "coolc bad.cl" to see the error messages that the coolc parser
- *  generates
- *
- *  execute "myparser bad.cl" to see the error messages that your parser
- *  generates
- *)
+    -- 2. erroneous statement definition (semicolon missing)
+    title : String
+    author : String;
 
-(* no error *)
-class A {
+    -- 3. erroneous type declaration (colon missing)
+    initBook(title_p : String, author_p : String) : Book {
+        {
+            title <- title_p;
+            author <- author_p;
+            self;
+        }
+    };
 };
 
-(* error:  b is not a type identifier *)
-Class b inherits A {
+-- 4. both class def and statements are erroneous (misspelling and semicolon)
+Class Article inherit Book {
+    per_title : String
 };
 
-(* error:  a is not a type identifier *)
-Class C inherits a {
+Class BookList inherits IO {
+
+    -- 5. incorrect feature definition (colon missing)
+    isNil() Bool { { abort(); true; } };
+
+    cons(hd : Book) : Cons {
+	-- 6. erroneous 'let' statement (assignment missing)
+        (let new_cell : Cons new Cons in
+            new_cell.init(hd,self)
+        )
+    };
+
+    cons(hd : Book) : Cons {
+	-- 7. erroneous 'let' statement ('new' missing)
+        (let new_cell : Cons <- Cons in
+            new_cell.init(hd,self)
+        )
+    };
 };
 
-(* error:  keyword inherits is misspelled *)
-Class D inherts A {
+Class Cons inherits BookList {
+
+    print_list() : Object {
+        {
+            case xcar.print() of
+		-- 8. incorrect 'case' expression (darrow missing)
+                dummy : Book out_string("- dynamic type was Book -\n");
+                dummy : Article => out_string("- dynamic type was Article -\n");
+            esac;
+            xcdr.print_list();
+        }
+    };
 };
-
-(* error:  closing brace is missing *)
-Class E inherits A {
-;
-
