@@ -216,4 +216,36 @@ Design Process
 Testing
 -------
 
+	1. We have tested the parser using good.cl and bad.cl codes. We have checked every syntax rule using good.cl and we have checked the
+	error handling using bad.cl.
+
+	2. For testing the good.cl file below command is used in the terminal.
+
+		diff -y <(lexer good.cl | parser) <(lexer good.cl | ./parser)
+
+		- Using above command we were able to compare the default parser with our implementation of the parser. We were able to see that, our
+		parser generates the accurate parser tree for the code in good.cl.
+
+	3. For testing bad.cl and check if the error hanlding works, we used below command.
+
+		diff -y <(lexer bad.cl | parser) <(lexer bad.cl | ./parser)
+
+		- Using above command we were able to see that our parser does additional error handling as well. Which is good because then the 
+		user can get more information when debugging the code.
+
+		- Follwoing test cases tested in bad.cl file.
+			1. erroneous class definition ('inherits' is misspelled)
+			2. erroneous statement definition (semicolon missing)
+			3. erroneous type declaration (colon missing)
+			4. both class def and statements are erroneous (misspelling and semicolon)
+			5. incorrect feature definition (colon missing)
+			6. erroneous 'let' statement (assignment missing)
+			7. erroneous 'let' statement ('new' missing)
+			8. incorrect 'case' expression (darrow missing)
+
+	4. We used 'make dotest' command to test both good.cl and bad.cl at once. We used this usally more than above two so that we can 
+	test both files.
+
+
+
 
