@@ -1,3 +1,4 @@
+-- Group 12 (E/17/027,E/17/219)
 -- 1. erroneous class definition ('inherits' is misspelled)
 Class Book inherit IO{
 
