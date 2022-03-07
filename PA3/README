@@ -132,6 +132,7 @@ Write-up for PA3
 ----------------
 
 Design Process
+--------------
 	
 	1.First associations for precedence in each operator was written in the cool.y file. This was done using the below format.
 
@@ -213,5 +214,6 @@ Design Process
 		parser and then a null node is added to the parser as there is an error in the current processing node. 
 
 Testing
+-------
 
 
