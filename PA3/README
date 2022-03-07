@@ -139,7 +139,8 @@ Design Process
 
 		-The association for each or set of operations was given in the cool-manual.pdf.
 
-	2. Then all the rules related to each syntax rule were written. All of these rules were given in the cool-manual.pdf. Below are the lists and different rule types we came up with.
+	2. Then all the rules related to each syntax rule were written. All of these rules were given in the cool-manual.pdf. Below 
+	are the lists and different rule types we came up with.
 		
 		1. program
 		2.class_list
@@ -159,31 +160,42 @@ Design Process
 
 	3. In addition to that, errors were handled in each syntax rule.
 
-	4. program is the root node in the AST, which is the main node in the AST. a program can be made up of at least one class(Main class) or multiple classes. Therefore the next level of the AST is simply a list of classes.
+	4. program is the root node in the AST, which is the main node in the AST. a program can be made up of at least one class(Main class) 
+	or multiple classes. Therefore the next level of the AST is simply a list of classes.
 
-	5. In each class, there should be a class signature with the class definition in the curly braces. Class definition was considered as feature_list as cool-maual.pdf suggest, therefore making feature_list as the next level of the AST.
+	5. In each class, there should be a class signature with the class definition in the curly braces. Class definition was considered as 
+	feature_list as cool-maual.pdf suggest, therefore making feature_list as the next level of the AST.
 
 	6. Of course, inside of a class can be empty therefore feature_list can be null. This case was handled in the rule definition of feature_list.
 
 	7. Feature list can be made up of zero or more feature , therefore making feature as the next level of the AST.
 
-	8. Feature can be a method or attribute. Therefore to make methods and attributes corresponding constructors were used which were specified in cool-tree.h file and cool-tour.pdf.(of course for making previous rules also, appropriate constructors were used.)
+	8. Feature can be a method or attribute. Therefore to make methods and attributes corresponding constructors were used which were specified 
+	in cool-tree.h file and cool-tour.pdf.(of course for making previous rules also, appropriate constructors were used.)
 
-	9. When there are optional extensions to the rule definition, in the constructor , no_expr() function is used to pass that parameter because in the rule definition it is not available.(for ex : line number 432 in cool.y)  
+	9. When there are optional extensions to the rule definition, in the constructor , no_expr() function is used to pass that parameter 
+	because in the rule definition it is not available.(for ex : line number 432 in cool.y)  
 
-	10. In the method definition of feature definition parameters of the method is taken as the formal_list, making that as the next level of AST. Also expression was used while defining feature.
+	10. In the method definition of feature definition parameters of the method is taken as the formal_list, making that as the next 
+	level of AST. Also expression was used while defining feature.
 
-	11. formal was the next level of AST followed by expressions as the next level of the AST. Each of these were clearly explained in the code itself and 4 more cases introduced while defining expressions which are expr_statements , expr_parameters, expr_case and expr_let , ,making them the next few levels of the AST of the parser.
+	11. formal was the next level of AST followed by expressions as the next level of the AST. Each of these were clearly explained in the 
+	code itself and 4 more cases introduced while defining expressions which are expr_statements , expr_parameters, expr_case and expr_let , 
+	,making them the next few levels of the AST of the parser.
 
 	12. expression is the longest part of the as per the definition, because most codes will of course contain expressions in most lines in different forms.
 
-	13. When defining single cases and multiple cases in different lists, we used single_CASE() and append_CASES() constructors which were defined in the cool-tree.h file. For example : we have used single_Classes() and single_Features() to define single classes and features and we have used append_Classes() and append_Features() to construct a list of classes and features.
+	13. When defining single cases and multiple cases in different lists, we used single_CASE() and append_CASES() constructors which were defined 
+	in the cool-tree.h file. For example : we have used single_Classes() and single_Features() to define single classes and features and we have used 
+	append_Classes() and append_Features() to construct a list of classes and features.
 
-	14. Of course while defining the above rules, we needed to add new types in the cool.y file.(from line 137 to 154). Here, we have used what is defined in the union which is defined at 89 lines. Below format is used when defining types.
+	14. Of course while defining the above rules, we needed to add new types in the cool.y file.(from line 137 to 154). Here, we have used what is defined 
+	in the union which is defined at 89 lines. Below format is used when defining types.
 
 		%type <[name as in the union]> [name of the type]
 
-	15. In addition , the errors were handled. For these each error is handled using where it can occur. In total there were 7 error cases and they are stated below.
+	15. In addition , the errors were handled. For these each error is handled using where it can occur. In total there were 7 error cases and they are 
+	stated below.
 
 		1. When there is an error in the feature_list in class definition.
 		2. When there is an error in the class signature.
@@ -197,7 +209,8 @@ Design Process
 
 		- In all of those error cases, yyerror function is called automatically by Bison and it was already defined in the cool.y file.
 
-		- Each error is handled by using yyclearin statement which is used to clear the next token(lookahead token) which is processed by the parser and then a null node is added to the parser as there is an error in the current processing node. 
+		- Each error is handled by using yyclearin statement which is used to clear the next token(lookahead token) which is processed by the 
+		parser and then a null node is added to the parser as there is an error in the current processing node. 
 
 Testing
 
