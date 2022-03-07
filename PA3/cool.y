@@ -292,7 +292,7 @@
       } |
 
       /*
-        error case 2 : when there is an error in the function signature,
+        error case 2 : when there is an error in the class signature,
         it is identified.
       */
 
