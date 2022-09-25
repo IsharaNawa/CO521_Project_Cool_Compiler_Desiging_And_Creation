@@ -1,6 +1,6 @@
 # compiler-for-cool
 
-This is a compiler for the cool-programming lanugage. <br>
+This is a compiler for the Cool- object oriented programming lanugage. <br>
 
 It consists with few stages.
   1. Lexical Analysing
