@@ -1,17 +1,39 @@
-class C {
-	a : Int;
-	b : Bool;
-	init(x : Int, y : Bool) : C {
-           {
-		a <- x;
-		b <- y;
-		self;
-           }
-	};
+class Main inherits IO{
+
+	x: Int;
+	y: String;
+	f: Foo;
+
+	z: Bool;
+
+	main(): Object {{
+
+		x <- 3; x <- 5; y <- "test"; f <- new Foo;
+
+		isvoid true; isvoid false; isvoid x;
+
+		let x:Int <- 5 in x;
+      	}};
+
+ 	foo(): String {"test"};
+
+	a : A;
+    	b : B;
 };
 
-Class Main {
-	main():C {
-	  (new C).init(1,true)
-	};
+class Foo {
+ 	x:Int <- 3;
+};
+
+class A {
+	foo:Int;
+	main() : Int { 6 };
+};
+
+class B inherits A {
+	bar:Int;
+};
+
+class C {
+	func():Int { { self; "hello"; true; 1; } };
 };

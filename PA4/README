@@ -164,3 +164,115 @@ Instructions
 
 Write-up for PA4
 ----------------
+
+The Semantic Checker is bulit on following major topics;
+
+1. Building an Inheritance graph
+
+    We created a class symbol table and double-checked that 
+	the class name didn't match the names of the fundamental classes.
+    Then we looked to see if the class had previously been implemented.
+    If not, the appropriate classes are added to the class symbol table; 
+	otherwise, an error is displayed.
+
+2. Check that the graph is well-formed
+
+    We looked to see if the Main class was present in the program.
+    We verified whether the main method occurs in the Main class 
+	if the Main class is present.
+    We saw what occurs when the semantic analyzer does not return an error.
+
+For each class;
+
+3. Traversing the AST
+
+    While traversing the AST, following the following matters had to be 
+	resolved to ensure its semantically correct;
+    1. Verify that all parent classes have been specified.
+    2. Determine whether or not the Object class has a parent class.
+    3. Check for inherited "bools," "strings," and "self types."
+
+    Further the attributes of the class had to be checked for;
+    1. Whether or not all kinds have been defined.
+    2. if the name of the "attribute" is not the same as "self"
+    3. Whether or whether the "attribute" has previously been specified.
+    4. The "attribute" will be added to the current "scope" 
+	   if it passes all of the aforementioned criteria.
+
+    Also the functions of the class had to be checked for;
+    1. if the method hasn't been specified already
+    2. Whether or whether the return type has been implemented in the program.
+    3. It will be added to the current scope if the method passes 
+	   all of the preceding criteria.
+
+4. Type correctness
+
+    In this section, we examined the expressions and formals in features, 
+	as well as assigned types to expressions.
+
+    We concentrated on the following things when examining 
+	the characteristics of the classes: 
+    1. whether the assigned phrase is semantically accurate and then 
+	   assigning a type to it (described below)
+    2. if the attribute's type declaration is the same as the expression type
+
+    We concentrated on the following things while examining the methods of 
+	the classes: 
+    1. creating a new "scope" 
+    2. ensuring that all formals (arguments) are semantically valid
+    3. Is it true that formal names are not the same as'self'?
+    4. Is the formal name not already defined in the current version?
+    5. formals are added to the current scope if they are semantically valid.
+    6. If the return type is 'SELF TYPE,' change the return type to 
+	   that of the current class type.
+    7. Assign a type to the method body(expression) 
+	   if it is semantically valid (described bellow)
+    8. Is the method's return type the same as the method's body type?
+
+5. Types annotations
+
+    Because types and features of a class might be utilized before 
+	the class definition in cool programming language, two passes are necessary. 
+    However, these classes and characteristics must be specified later 
+	in the application. 
+    
+	As a result, all of the program's classes are added to a database 
+	called the class symbol table during the first pass. 
+    The feature table of each class has been updated with 
+	each class's methods and attributes. 
+    It is feasible to keep track of all the classes and features 
+	declared in the program in this manner. 
+    The expressions are then tested for semantic correctness in the second pass. 
+    The first pass includes all of the stages listed above.
+
+As mentioned before, we have to type check for all the expression types 
+in Cool language, when implementing the Semantic Analiser.
+For this purpose there is a in-built "recursive" function named 
+"semant_expr()" has been providedd for us.
+This function check for types including the arithmatic 
+operations and booleanoperations. The followings are 
+the all the expression types resolved with the function;
+
+    1.assignType
+    2.blockType
+    3.bool_constType
+    4.caseType
+    5.compType
+    6.condType
+    7.disatchType
+    8.divType
+    9.eqType
+    10.int_constType
+    11.isvoidType
+    12.letType
+    13.loopType
+    14.ltType
+    15.mulType
+    16.negType
+    17.no_exprType
+    18.newType
+    19.objectType
+    20.plusType
+    21.static_dispatchType
+    22.string_constType
+    23.subType
