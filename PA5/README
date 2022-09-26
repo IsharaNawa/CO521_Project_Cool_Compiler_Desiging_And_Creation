@@ -148,7 +148,29 @@ Instructions
 	GOOD LUCK!
 
 ---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
+E/17/219
+E/17/027
+
 
 Write-up for PA5
 ----------------
 
+constructor resides in cgenClassTable can be considered as the entry point.
+Using this constructor, first we need to go through each of the basic classes 
+and we need to install those classes into this table. After it is done, we need
+to go through the rest of the classes which are subclasses and build the 
+inheritance tree relted to those classes. Also we need to maintain a vector which
+stores classes. This vector helps to refer back to the classes in the constructor
+and call the code function. In this code function, coding related to global data is done
+and then also coding for garbage collector is also done. Then coding related to all the 
+constants in the program, integer values, string values and boolean values are done.
+Then the table for holding all the class names which is related to the program is build.
+This table should be emit to the spim file. 
+Then the table for holding objects are programmed and that table should also be emit to
+the spim file.
+After that, the dispatch tables related to all the methods in the classes are programmed.
+Then the prototype objects of the classes are done.
+Then the global texts are emitted.
+Then all the initilizations or the init methods of all classes are emitted.
+Finally, the methods related to all the classes are coded and all the coding related to
+their expressions are emitted. 
